@@ -1,0 +1,28 @@
+.selector-huespedes {
+    background: linear-gradient(135deg, #34495e 0%, #000000 120%);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.controles button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: #0aa;
+    color: white;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.controles span {
+    margin: 0 10px;
+    font-size: 16px;
+}
