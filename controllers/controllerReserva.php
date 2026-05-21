@@ -12,6 +12,7 @@ class controllerReserva {
     }
 
     public function crear_reserva($data) {
+        // Datos de la sesión y del formulario para crear una reserva.
         $usuario_id    = $_SESSION['user_id'];
         $habitacion_id = $data['habitacion_id'] ?? '';
         $fecha_inicio  = $data['checkin']  ?? $data['fecha_checkin']  ?? '';
@@ -20,12 +21,14 @@ class controllerReserva {
 
         $errors = [];
 
+        // Validar campos requeridos y tipos de datos.
         if (empty($habitacion_id))           { $errors['habitacion_id'] = 'Seleccione una habitación.'; }
         elseif (!is_numeric($habitacion_id)) { $errors['habitacion_id'] = 'Habitación inválida.'; }
         if (empty($fecha_inicio))            { $errors['fecha_checkin'] = 'Fecha obligatoria.'; }
         if (empty($fecha_final))             { $errors['fecha_checkout'] = 'Fecha obligatoria.'; }
 
         if (!empty($fecha_inicio) && !empty($fecha_final)) {
+            // La fecha de salida debe ser posterior a la fecha de entrada.
             if (strtotime($fecha_final) <= strtotime($fecha_inicio)) {
                 $errors['fecha_checkout'] = 'La fecha de salida debe ser al menos un día después de la fecha de llegada.';
             }
@@ -41,6 +44,7 @@ class controllerReserva {
         $habitacion = $habitacionModel->obtenerHabitacion($habitacion_id);
         if (!$habitacion) { $errors['habitacion_id'] = 'Habitación no encontrada.'; }
 
+        // Si hubo errores, devolver al formulario de reserva con los valores anteriores.
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             $_SESSION['old'] = $data;
@@ -55,6 +59,8 @@ class controllerReserva {
             $reservaModel = new Reserva();
             if ($reservaModel->crear($usuario_id, $habitacion_id, $fecha_inicio, $fecha_final, $n_personas, $precio_total)) {
                 $_SESSION['reserva_success'] = 'Reserva creada correctamente.';
+
+                // Enviar correo de confirmación de reserva al usuario autenticado.
                 if (isset($_SESSION['user_email'], $_SESSION['user_name'])) {
                     require_once __DIR__ . '/../utils/email.php';
                     enviarCorreo($_SESSION['user_email'], $_SESSION['user_name']);

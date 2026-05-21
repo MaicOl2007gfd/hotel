@@ -38,6 +38,7 @@ class controllerPDF {
 
         $pdf = new FPDF('P', 'mm', 'A4');
         $pdf->SetMargins(20, 20, 20);
+        $pdf->SetAutoPageBreak(true, 20);
         $pdf->AddPage();
 
         // Encabezado
@@ -147,6 +148,10 @@ class controllerPDF {
         $pdf->Cell(0, 5, 'Gracias por elegir Hotel MYQ. Esperamos su visita.', 0, 1, 'C');
 
         $nombreArchivo = 'reserva_' . str_pad($reservas['id'], 6, '0', STR_PAD_LEFT) . '.pdf';
+        // Limpiar cualquier salida previa para evitar páginas en blanco o PDF corruptos.
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
         $pdf->Output('D', $nombreArchivo);
         exit;
     }
@@ -171,4 +176,3 @@ class controllerPDF {
         $pdf->Cell(115, 7, $valor, 0, 1, 'L');
     }
 }
-?>
